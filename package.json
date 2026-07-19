@@ -1,0 +1,26 @@
+{
+  "name": "vyomai-solutions-website",
+  "version": "1.0.0",
+  "description": "VyomAi Solutions Pvt Ltd - Professional AI, Automation & Corporate Services Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "vyomai",
+    "ai",
+    "automation",
+    "corporate-services",
+    "nodejs",
+    "express"
+  ],
+  "author": "VyomAi Solutions Pvt Ltd",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

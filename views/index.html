@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VyomAi Solutions Pvt Ltd | AI, Automation & Corporate Services</title>
+    <meta name="description" content="VyomAi Solutions Pvt Ltd delivers AI chatbots, AI agents, automation, marketing strategy, and legal corporate services through a modern, user-friendly digital experience.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --bg-light: #ffffff;
+            --surface: rgba(255, 255, 255, 0.95);
+            --surface-strong: #ffffff;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --muted: #64748b;
+            --primary: #0ea5e9;
+            --primary-dark: #1e3a8a;
+            --secondary: #06b6d4;
+            --accent: #7c3aed;
+            --border: rgba(15, 23, 42, 0.08);
+            --shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+            --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.08);
+            --radius: 20px;
+            --container: 1280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 50%, #f5f3ff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.06), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.04), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            width: min(calc(100% - 2rem), var(--container));
+            margin: 0 auto;
+        }
+
+        .section {
+            padding: 5rem 0;
+        }
+
+        @media (max-width: 900px) {
+            .section {
+                padding: 3.5rem 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .section {
+                padding: 2.5rem 0;
+            }
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .section-heading {
+            max-width: 42rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-heading h2 {
+            margin-top: 1rem;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.15;
+            font-weight: 800;
+            background: linear-gradient(120deg, var(--primary-dark), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-heading p {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .service-card h3,
+        .info-card h3,
+        .contact-card h3,
+        .timeline-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .glass-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius);
+            backdrop-filter: blur(20px);
+        }
+
+        /* ========================================
+           PROFESSIONAL ENHANCED NAVBAR
+           ======================================== */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+            backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .site-header.scrolled {
+            padding: 0.7rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom-color: rgba(15, 23, 42, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            transition: transform 0.2s ease;
+        }
+
+        .brand:hover {
+            transform: translateY(-1px);
+        }
+
+        .brand-logo {
+            width: 7rem;
+            height: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .brand:hover .brand-logo {
+            transform: scale(1.05);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .brand-name {
+            font-size: 1.1rem;
+            color: var(--text);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            position: relative;
+            padding: 0.7rem 1.2rem;
+            border-radius: 12px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-links a::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(6, 182, 212, 0.06));
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0.25rem;
+            width: 0;
+            height: 2px;
+            transform: translateX(-50%);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, var(--primary-dark), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            color: var(--primary-dark);
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a:focus-visible::before {
+            opacity: 1;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a:focus-visible::after {
+            width: calc(100% - 2rem);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 0.35rem;
+            padding: 0.6rem;
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(14, 165, 233, 0.15);
+            transform: scale(1.05);
+        }
+
+        .mobile-menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--primary-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translateY(8px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translateY(-8px);
+        }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                right: -100%;
+                width: min(320px, 100vw - 2rem);
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                padding: 1.5rem;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(15, 23, 42, 0.08);
+                border-radius: 20px;
+                box-shadow: -8px 8px 32px rgba(0, 0, 0, 0.12);
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 90;
+            }
+
+            .nav-links.active {
+                right: 1rem;
+            }
+
+            .nav-links a {
+                text-align: center;
+                padding: 1rem 1.5rem;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .brand-name {
+                font-size: 1rem;
+            }
+
+            .brand-logo {
+                width: 6rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-row {
+                gap: 1rem;
+            }
+
+            .brand-text {
+                display: none;
+            }
+
+            .brand-logo {
+                width: 5rem;
+            }
+        }
+
+        .button,
+        button {
+            border: 0;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            padding: 1rem 1.8rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+
+        .button-primary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .button-primary:hover {
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+        }
+
+        .button-secondary {
+            color: var(--primary-dark);
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .button-secondary:hover {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+
+        .button:hover,
+        .button:focus-visible {
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 5rem 0 2rem;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin: 1.2rem 0;
+            background: linear-gradient(120deg, var(--primary-dark), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .hero-copy p {
+            max-width: 40rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .hero-actions,
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.8rem;
+        }
+
+        .hero-stat {
+            padding: 1rem 1.2rem;
+            min-width: 10rem;
+        }
+
+        .hero-stat strong {
+            display: block;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+        }
+
+        .hero-stat span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .hero-panel {
+            position: relative;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+
+        .hero-panel::before {
+            content: "";
+            position: absolute;
+            inset: 1rem;
+            border-radius: calc(var(--radius) - 8px);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.06), rgba(6, 182, 212, 0.03));
+            border: 1px solid rgba(14, 165, 233, 0.15);
+        }
+
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .dashboard-top,
+        .dashboard-bottom {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .dashboard-top {
+            grid-template-columns: 1.2fr 0.8fr;
+        }
+
+        .dashboard-bottom {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .dashboard-card {
+            background: rgba(240, 249, 255, 0.6);
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+        }
+
+        .dashboard-card h3,
+        .dashboard-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.85rem;
+            color: var(--text);
+        }
+
+        .signal-grid {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .signal-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .signal-bar {
+            flex: 1;
+            height: 0.5rem;
+            border-radius: 999px;
+            background: rgba(14, 165, 233, 0.1);
+            overflow: hidden;
+        }
+
+        .signal-bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--primary-dark), var(--secondary));
+            animation: pulseGrow 3s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(14, 165, 233, 0.4);
+        }
+
+        .orbit-box {
+            min-height: 100%;
+            display: grid;
+            place-items: center;
+            position: relative;
+        }
+
+        .orbit-core,
+        .orbit-ring,
+        .orbit-dot {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .orbit-core {
+            width: 5rem;
+            height: 5rem;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .orbit-ring {
+            width: 10.5rem;
+            height: 10.5rem;
+            border: 1px dashed rgba(14, 165, 233, 0.25);
+            animation: spin 12s linear infinite;
+        }
+
+        .orbit-dot {
+            width: 1rem;
+            height: 1rem;
+            top: 0.55rem;
+            left: calc(50% - 0.5rem);
+            background: var(--secondary);
+            box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
+        }
+
+        .metric {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .metric strong {
+            font-size: 1.35rem;
+        }
+
+        .metric span,
+        .metric p,
+        .dashboard-card p,
+        .dashboard-card small,
+        .service-card p,
+        .info-card p,
+        .contact-card p,
+        .timeline-card p,
+        .footer-grid p {
+            color: var(--text-secondary);
+        }
+
+        .dashboard-card small {
+            color: var(--muted);
+        }
+
+        .services-grid,
+        .info-grid,
+        .contact-grid,
+        .timeline-grid,
+        .footer-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .services-grid {
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        }
+
+        .service-card,
+        .info-card,
+        .contact-card,
+        .timeline-card {
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            border: 1px solid rgba(14, 165, 233, 0.12);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.7), rgba(255, 255, 255, 0.9));
+        }
+
+        .service-card:hover,
+        .info-card:hover,
+        .contact-card:hover,
+        .timeline-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.25);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(255, 255, 255, 1));
+        }
+
+        .service-card::before,
+        .info-card::before,
+        .timeline-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -25% -65% auto;
+            width: 12rem;
+            height: 12rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.08), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-card:hover::before,
+        .info-card:hover::before,
+        .timeline-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 5rem;
+            height: 5rem;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25);
+        }
+
+        .service-list {
+            list-style: none;
+            margin-top: 1rem;
+            display: grid;
+            gap: 0.7rem;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.95rem;
+        }
+
+        .service-list li::before {
+            content: "";
+            width: 0.35rem;
+            height: 0.35rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            flex-shrink: 0;
+        }
+
+        .service-label {
+            display: inline-block;
+            padding: 0.4rem 0.85rem;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 999px;
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .info-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .timeline-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        /* ========================================
+           PROJECTS SECTION STYLES
+           ======================================== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .project-card {
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            border: 1px solid rgba(14, 165, 233, 0.12);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.7), rgba(255, 255, 255, 0.9));
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .project-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.3);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(255, 255, 255, 1));
+        }
+
+        .project-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -25% -65% auto;
+            width: 14rem;
+            height: 14rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.08), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-header {
+            position: relative;
+            z-index: 2;
+        }
+
+        .project-category {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 999px;
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .project-objective {
+            color: var(--text-secondary);
+            font-size: 0.98rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .project-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .project-stack-item {
+            padding: 0.4rem 0.8rem;
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            border-radius: 8px;
+            color: var(--primary-dark);
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .project-card:hover .project-stack-item {
+            background: rgba(14, 165, 233, 0.12);
+            border-color: rgba(14, 165, 233, 0.25);
+        }
+
+        .project-outcome {
+            padding: 1rem;
+            background: rgba(6, 182, 212, 0.05);
+            border-left: 3px solid var(--secondary);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .project-outcome strong {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.3rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .project-link-github {
+            color: var(--text);
+            background: rgba(15, 23, 42, 0.06);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+        }
+
+        .project-link-github:hover {
+            background: rgba(15, 23, 42, 0.1);
+            border-color: rgba(15, 23, 42, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .project-link-live {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+        }
+
+        .project-link-live:hover {
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.25);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1080px) {
+            .projects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            }
+        }
+
+        @media (max-width: 780px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card {
+                padding: 2rem;
+            }
+
+            .project-card h3 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .timeline-step {
+            display: inline-flex;
+            width: 2.4rem;
+            height: 2.4rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            background: rgba(14, 165, 233, 0.12);
+        }
+
+        .contact-grid {
+            grid-template-columns: 1fr 1fr;
+            align-items: start;
+            gap: 2rem;
+        }
+
+        .contact-panel {
+            padding: 1.8rem;
+        }
+
+        .contact-list {
+            list-style: none;
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-list li {
+            display: flex;
+            gap: 0.9rem;
+            align-items: flex-start;
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            background: rgba(240, 249, 255, 0.5);
+            color: var(--text);
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.08);
+            background: rgba(240, 249, 255, 0.8);
+        }
+
+        .contact-form textarea {
+            min-height: 9rem;
+        }
+
+        .mini-note {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        footer {
+            padding: 2rem 0 3rem;
+        }
+
+        .footer-grid {
+            grid-template-columns: 1.2fr 0.8fr 0.8fr;
+            padding: 1.7rem;
+        }
+
+        .footer-links {
+            display: grid;
+            gap: 0.65rem;
+            color: var(--muted);
+        }
+
+        .footer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: 999px;
+            background: rgba(14, 165, 233, 0.08);
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes floatBlob {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(0, 1rem, 0) scale(1.05); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulseGrow {
+            0%, 100% { transform: scaleX(0.94); }
+            50% { transform: scaleX(1); }
+        }
+
+        @media (max-width: 1080px) {
+            .hero-grid,
+            .split-layout,
+            .contact-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+
+            .timeline-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .info-grid,
+            .dashboard-top,
+            .dashboard-bottom {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 780px) {
+            .site-header {
+                position: static;
+            }
+
+            .hero-actions,
+            .hero-stats,
+            .field-row,
+            .info-grid,
+            .dashboard-top,
+            .dashboard-bottom,
+            .services-grid,
+            .timeline-grid {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-copy h1 {
+                font-size: clamp(2.35rem, 11vw, 3.8rem);
+            }
+
+            .section {
+                padding: 4rem 0;
+            }
+
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-card,
+            .info-card,
+            .timeline-card {
+                padding: 1.5rem;
+            }
+
+            .card-icon {
+                width: 3.5rem;
+                height: 3.5rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        .locations-map-wrapper {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.4), rgba(255, 255, 255, 0.6));
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            border-radius: var(--radius);
+        }
+
+        .world-map {
+            width: 100%;
+            height: 500px;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.15);
+            z-index: 1;
+        }
+
+        .world-map .leaflet-container {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #faf5ff 100%);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .world-map .leaflet-control-zoom {
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+        }
+
+        .world-map .leaflet-control-zoom a {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-dark);
+            font-weight: 700;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+        }
+
+        .world-map .leaflet-control-zoom a:hover {
+            background: rgba(255, 255, 255, 1);
+            color: var(--primary);
+        }
+
+        /* Custom marker styling */
+        .leaflet-marker-icon {
+            background: none;
+            border: none;
+        }
+
+        .custom-marker {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .custom-marker:hover,
+        .custom-marker.active {
+            transform: scale(1.2);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.5);
+            border-color: #fff;
+        }
+
+        .location-marker {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .location-marker:hover circle:first-child {
+            r: 28;
+        }
+
+        .location-marker:hover circle:last-of-type {
+            filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.6));
+        }
+
+        .marker-pulse {
+            animation: svgPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes svgPulse {
+            0%, 100% {
+                r: 20;
+                opacity: 0.6;
+            }
+            50% {
+                r: 28;
+                opacity: 0.2;
+            }
+        }
+
+        .location-details-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .location-details-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .location-details-container::-webkit-scrollbar-track {
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 10px;
+        }
+
+        .location-details-container::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.2);
+            border-radius: 10px;
+        }
+
+        .location-details-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.3);
+        }
+
+        .location-detail-item {
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .location-detail-item:hover,
+        .location-detail-item.active {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(14, 165, 233, 0.3);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+        }
+
+        .detail-marker {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+        }
+
+        .location-detail-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .location-detail-item p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-cities {
+            font-size: 0.8rem !important;
+            color: var(--primary-dark) !important;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+
+        .locations-map-container {
+            margin-top: 3rem;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .location-card {
+            position: relative;
+            padding: 2rem;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.5), rgba(255, 255, 255, 0.8));
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+        }
+
+        .location-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% -50%, rgba(14, 165, 233, 0.05), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .location-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(14, 165, 233, 0.3);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.8), rgba(255, 255, 255, 0.95));
+            box-shadow: 0 16px 40px rgba(14, 165, 233, 0.12);
+        }
+
+        .location-card:hover::before {
+            opacity: 1;
+        }
+
+        .location-marker {
+            position: relative;
+            width: 5rem;
+            height: 5rem;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .marker-dot {
+            position: relative;
+            z-index: 2;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+            position: relative;
+        }
+
+        .location-card:hover .marker-dot {
+            transform: scale(1.15);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
+        }
+
+        .location-card h3 {
+            margin-top: 1rem;
+            font-size: 1.3rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .location-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .location-details {
+            font-size: 0.85rem !important;
+            color: var(--primary-dark) !important;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        @keyframes markerPulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0.6;
+            }
+        }
+
+        @media (max-width: 1080px) {
+            .locations-map-wrapper {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .world-map {
+                height: 400px;
+            }
+
+            .location-details-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 780px) {
+            .locations-map-wrapper {
+                padding: 1rem;
+            }
+
+            .world-map {
+                height: 350px;
+                margin-bottom: 1.5rem;
+            }
+
+            .location-details-container {
+                grid-template-columns: 1fr;
+            }
+
+            .location-detail-item {
+                padding: 1rem;
+            }
+
+            .detail-marker {
+                width: 2rem;
+                height: 2rem;
+                font-size: 0.7rem;
+            }
+
+            .location-detail-item h3 {
+                font-size: 1rem;
+            }
+
+            .location-detail-item p {
+                font-size: 0.8rem;
+            }
+
+            .custom-marker {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <header class="site-header" id="mainHeader">
+            <div class="container nav-row">
+                <a href="#home" class="brand" aria-label="VyomAi Solutions Pvt Ltd home">
+                    <img src="/logo vyom.jpeg" alt="VyomAi Solutions Logo" class="brand-logo">
+                    <div class="brand-text">
+                        <span class="brand-name">VyomAi Solutions Pvt Ltd</span>
+                        <small>AI • Automation • Growth</small>
+                    </div>
+                </a>
+                <nav class="nav-links" id="mainNav" aria-label="Primary navigation">
+                    <a href="#services">Services</a>
+                    <a href="#about">About</a>
+                    <a href="#process">Process</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero section" id="home">
+                <div class="container hero-grid">
+                    <div class="hero-copy reveal">
+                        <span class="section-tag">Future-ready digital services</span>
+                        <h1>Build smarter business systems with AI, automation and strategic execution.</h1>
+                        <p>
+                            VyomAi Solutions Pvt Ltd helps modern businesses launch intelligent chatbots, deploy AI agents,
+                            automate workflows, scale marketing operations, and streamline legal corporate support through one professional partner.
+                        </p>
+                        <div class="hero-actions">
+                            <a class="button button-primary" href="#contact">Book a Strategy Call</a>
+                            <a class="button button-secondary" href="#services">Explore Services</a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="hero-stat glass-card">
+                                <strong>24/7</strong>
+                                <span>AI-powered engagement and support coverage</span>
+                            </div>
+                            <div class="hero-stat glass-card">
+                                <strong>5 Core</strong>
+                                <span>Service pillars across AI, growth and compliance</span>
+                            </div>
+                            <div class="hero-stat glass-card">
+                                <strong>Fast</strong>
+                                <span>Implementation that stays business-friendly</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-panel glass-card reveal">
+                        <div class="dashboard">
+                            <div class="dashboard-top">
+                                <article class="dashboard-card">
+                                    <h3>Intelligence Stack</h3>
+                                    <div class="signal-grid">
+                                        <div class="signal-item">
+                                            <span>Conversational AI</span>
+                                            <div class="signal-bar"><span style="width: 92%"></span></div>
+                                        </div>
+                                        <div class="signal-item">
+                                            <span>Workflow Automation</span>
+                                            <div class="signal-bar"><span style="width: 88%"></span></div>
+                                        </div>
+                                        <div class="signal-item">
+                                            <span>Growth Systems</span>
+                                            <div class="signal-bar"><span style="width: 84%"></span></div>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="dashboard-card orbit-box" aria-hidden="true">
+                                    <div class="orbit-ring">
+                                        <div class="orbit-dot"></div>
+                                    </div>
+                                    <div class="orbit-core"></div>
+                                </article>
+                            </div>
+
+                            <div class="dashboard-bottom">
+                                <article class="dashboard-card metric">
+                                    <small>AI Agents</small>
+                                    <strong>Task orchestration</strong>
+                                    <p>Automate research, follow-ups and internal workflows.</p>
+                                </article>
+                                <article class="dashboard-card metric">
+                                    <small>Marketing Ops</small>
+                                    <strong>Smarter campaigns</strong>
+                                    <p>Align content, funnels and analytics with business goals.</p>
+                                </article>
+                                <article class="dashboard-card metric">
+                                    <small>Corporate Support</small>
+                                    <strong>Compliance focus</strong>
+                                    <p>Support legal and corporate documentation with clarity.</p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="services">
+                <div class="container">
+                    <div class="section-heading reveal">
+                        <span class="section-tag">What we do</span>
+                        <h2>Integrated services designed for modern companies.</h2>
+                        <p>
+                            We combine product thinking, AI capabilities and operational support so your company can improve customer experience,
+                            reduce manual work and stay execution-focused.
+                        </p>
+                    </div>
+
+                    <div class="services-grid">
+                        <article class="service-card glass-card reveal">
+                            <div class="card-icon">AI</div>
+                            <span class="service-label">Customer Engagement</span>
+                            <h3>AI Chatbots</h3>
+                            <p>Deploy branded conversational assistants for lead capture, support queries, appointment handling and knowledge delivery.</p>
+                            <ul class="service-list">
+                                <li>Website and WhatsApp chatbot experiences</li>
+                                <li>FAQs, product discovery and support flows</li>
+                                <li>Lead qualification and handoff logic</li>
+                            </ul>
+                        </article>
+
+                        <article class="service-card glass-card reveal">
+                            <div class="card-icon">AG</div>
+                            <span class="service-label">Automation & Intelligence</span>
+                            <h3>AI Agents</h3>
+                            <p>Create action-oriented AI agents that can handle internal research, SOP-based tasks, reporting and team assistance.</p>
+                            <ul class="service-list">
+                                <li>Multi-step task execution support</li>
+                                <li>Internal productivity and operations use cases</li>
+                                <li>Custom knowledge grounding and prompts</li>
+                            </ul>
+                        </article>
+
+                        <article class="service-card glass-card reveal">
+                            <div class="card-icon">AU</div>
+                            <span class="service-label">Operations & Efficiency</span>
+                            <h3>Automation</h3>
+                            <p>Replace repetitive manual work with workflow automation that connects your tools, approvals and customer journeys.</p>
+                            <ul class="service-list">
+                                <li>CRM, forms, spreadsheets and email automation</li>
+                                <li>Process mapping and workflow design</li>
+                                <li>Alerts, dashboards and operational efficiency</li>
+                            </ul>
+                        </article>
+
+                        <article class="service-card glass-card reveal">
+                            <div class="card-icon">MK</div>
+                            <span class="service-label">Growth & Marketing</span>
+                            <h3>Marketing Services</h3>
+                            <p>Support your digital growth with modern campaign strategy, branding support, content planning and funnel optimization.</p>
+                            <ul class="service-list">
+                                <li>Performance-oriented campaign planning</li>
+                                <li>Landing pages, content systems and nurturing</li>
+                                <li>Audience insights and conversion improvement</li>
+                            </ul>
+                        </article>
+
+                        <article class="service-card glass-card reveal">
+                            <div class="card-icon">LC</div>
+                            <span class="service-label">Compliance & Support</span>
+                            <h3>Legal & Corporate Services</h3>
+                            <p>Strengthen business operations with structured support for legal, documentation and corporate coordination needs.</p>
+                            <ul class="service-list">
+                                <li>Corporate documentation assistance</li>
+                                <li>Process support for compliance coordination</li>
+                                <li>Clear communication for professional workflows</li>
+                            </ul>
+                        </article>
+
+                        <article class="service-card glass-card reveal">
+                            <div class="card-icon">CX</div>
+                            <span class="service-label">Strategy & Delivery</span>
+                            <h3>End-to-End Advisory</h3>
+                            <p>From idea to rollout, we shape the right mix of technology, messaging and process to fit your business stage.</p>
+                            <ul class="service-list">
+                                <li>Discovery, roadmap and implementation support</li>
+                                <li>Business-friendly solution design</li>
+                                <li>Scalable systems for future growth</li>
+                            </ul>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="about">
+                <div class="container split-layout">
+                    <article class="contact-panel glass-card reveal">
+                        <span class="section-tag">Why VyomAi</span>
+                        <h2 style="margin-top: 1rem; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1;">Professional execution with a modern AI-first mindset.</h2>
+                        <p style="margin-top: 1rem; color: var(--muted);">
+                            We focus on practical, business-ready delivery. That means every solution is designed to be useful, understandable,
+                            scalable and aligned with your customer and operational goals.
+                        </p>
+                        <ul class="service-list" style="margin-top: 1.5rem;">
+                            <li>Light, premium user experiences with clear messaging</li>
+                            <li>Strategy-led implementations instead of disconnected tools</li>
+                            <li>Balanced support across technology, growth and corporate needs</li>
+                        </ul>
+                    </article>
+
+                    <div class="info-grid">
+                        <article class="info-card glass-card reveal">
+                            <div class="card-icon">01</div>
+                            <h3>Tech-friendly design</h3>
+                            <p>Elegant interfaces, intuitive structure and polished interactions that make complex services feel accessible.</p>
+                        </article>
+                        <article class="info-card glass-card reveal">
+                            <div class="card-icon">02</div>
+                            <h3>Business practicality</h3>
+                            <p>Solutions are planned around measurable outcomes, team adoption and real operational value.</p>
+                        </article>
+                        <article class="info-card glass-card reveal">
+                            <div class="card-icon">03</div>
+                            <h3>Cross-functional support</h3>
+                            <p>AI delivery, process automation, marketing enablement and corporate support work together under one brand.</p>
+                        </article>
+                        <article class="info-card glass-card reveal">
+                            <div class="card-icon">04</div>
+                            <h3>Responsive by default</h3>
+                            <p>The experience stays clean and user-friendly across desktop, tablet and mobile screens.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="process">
+                <div class="container">
+                    <div class="section-heading reveal">
+                        <span class="section-tag">How we work</span>
+                        <h2>A clear process from discovery to delivery.</h2>
+                        <p>
+                            We keep execution structured so your team understands the roadmap, timing and value of every engagement.
+                        </p>
+                    </div>
+
+                    <div class="timeline-grid">
+                        <article class="timeline-card glass-card reveal">
+                            <span class="timeline-step">1</span>
+                            <h3>Discovery</h3>
+                            <p>Understand your current systems, customer journey, manual bottlenecks and growth priorities.</p>
+                        </article>
+                        <article class="timeline-card glass-card reveal">
+                            <span class="timeline-step">2</span>
+                            <h3>Solution Design</h3>
+                            <p>Shape the right service mix across chatbot, agent, automation, marketing or corporate support.</p>
+                        </article>
+                        <article class="timeline-card glass-card reveal">
+                            <span class="timeline-step">3</span>
+                            <h3>Implementation</h3>
+                            <p>Build, configure and refine the experience with a focus on usability and operational fit.</p>
+                        </article>
+                        <article class="timeline-card glass-card reveal">
+                            <span class="timeline-step">4</span>
+                            <h3>Optimization</h3>
+                            <p>Track feedback, improve performance and expand capabilities as your business grows.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="projects">
+                <div class="container">
+                    <div class="section-heading reveal">
+                        <span class="section-tag">Our Work</span>
+                        <h2>Real-world AI projects delivering measurable impact.</h2>
+                        <p>
+                            From healthcare automation to aerospace intelligence, we build production-ready AI systems that solve complex business challenges.
+                        </p>
+                    </div>
+
+                    <div class="projects-grid">
+                        <article class="project-card glass-card reveal">
+                            <div class="project-header">
+                                <span class="project-category">Healthcare AI</span>
+                                <h3>Patient Journey Agent</h3>
+                            </div>
+                            <p class="project-objective">
+                                Automate disease-specific patient journey analysis from recorded transcriptions using agentic AI workflows.
+                            </p>
+                            <div class="project-stack">
+                                <span class="project-stack-item">ElevenLabs</span>
+                                <span class="project-stack-item">Claude Sonnet</span>
+                                <span class="project-stack-item">LangGraph</span>
+                                <span class="project-stack-item">FAISS</span>
+                            </div>
+                            <div class="project-outcome">
+                                <strong>Impact:</strong> Processed 100+ patient recordings at 95%+ accuracy and reduced analysis time from months to under 10 minutes.
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/Saurabh-Shukla-AI" target="_blank" rel="noopener" class="project-link project-link-github">
+                                    <span>→</span> View on GitHub
+                                </a>
+                            </div>
+                        </article>
+
+                        <article class="project-card glass-card reveal">
+                            <div class="project-header">
+                                <span class="project-category">Aerospace Flight Intelligence</span>
+                                <h3>Avonica</h3>
+                            </div>
+                            <p class="project-objective">
+                                Build a real-time agentic system for pilots to query live flight data and retrieve operational information via natural language.
+                            </p>
+                            <div class="project-stack">
+                                <span class="project-stack-item">LangGraph</span>
+                                <span class="project-stack-item">OpenAI GPT-4</span>
+                                <span class="project-stack-item">REST APIs</span>
+                                <span class="project-stack-item">Python</span>
+                            </div>
+                            <div class="project-outcome">
+                                <strong>Impact:</strong> Enabled conversational flight decision support for aerospace use cases using real-time operational data.
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/Saurabh-Shukla-AI" target="_blank" rel="noopener" class="project-link project-link-github">
+                                    <span>→</span> View on GitHub
+                                </a>
+                            </div>
+                        </article>
+
+                        <article class="project-card glass-card reveal">
+                            <div class="project-header">
+                                <span class="project-category">Document AI</span>
+                                <h3>Invoice Verification & Reconciliation System</h3>
+                            </div>
+                            <p class="project-objective">
+                                Automate invoice extraction and Excel-based verification using rule-driven reconciliation logic.
+                            </p>
+                            <div class="project-stack">
+                                <span class="project-stack-item">Azure Document Intelligence</span>
+                                <span class="project-stack-item">Python</span>
+                                <span class="project-stack-item">Pandas</span>
+                                <span class="project-stack-item">Excel</span>
+                            </div>
+                            <div class="project-outcome">
+                                <strong>Impact:</strong> Achieved 100% reconciliation accuracy and eliminated manual invoice verification entirely.
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/Saurabh-Shukla-AI" target="_blank" rel="noopener" class="project-link project-link-github">
+                                    <span>→</span> View on GitHub
+                                </a>
+                            </div>
+                        </article>
+
+                        <article class="project-card glass-card reveal">
+                            <div class="project-header">
+                                <span class="project-category">Research Automation</span>
+                                <h3>Medical Journal Intelligence Agent</h3>
+                            </div>
+                            <p class="project-objective">
+                                Extract, clean, and query key findings from medical research conferences using a multi-agent workflow.
+                            </p>
+                            <div class="project-stack">
+                                <span class="project-stack-item">LangGraph</span>
+                                <span class="project-stack-item">GPT-4 Web Search</span>
+                                <span class="project-stack-item">Claude API</span>
+                                <span class="project-stack-item">SQL</span>
+                            </div>
+                            <div class="project-outcome">
+                                <strong>Impact:</strong> Enabled non-technical users to query a live medical knowledge database through natural language.
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/Saurabh-Shukla-AI" target="_blank" rel="noopener" class="project-link project-link-github">
+                                    <span>→</span> View on GitHub
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="contact">
+                <div class="container contact-grid">
+                    <article class="contact-panel glass-card reveal">
+                        <span class="section-tag">Let's connect</span>
+                        <h2 style="margin-top: 1rem; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1;">Ready to elevate your systems and services?</h2>
+                        <p style="margin-top: 1rem; color: var(--muted);">
+                            Whether you need an AI-powered customer interface, internal automation, growth support or professional corporate assistance,
+                            VyomAi Solutions Pvt Ltd is ready to help you move forward.
+                        </p>
+                        <ul class="contact-list">
+                            <li>
+                                <div class="card-icon">@</div>
+                                <div>
+                                    <strong>Email</strong>
+                                    <p>info@vyomaisolutions.com</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="card-icon">P</div>
+                                <div>
+                                    <strong>Phone</strong>
+                                    <p>+91 7310441335</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="card-icon">O</div>
+                                <div>
+                                    <strong>Focus</strong>
+                                    <p>AI chatbots, agents, automation, marketing and legal corporate services</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="contact-panel glass-card reveal">
+                        <form class="contact-form">
+                            <div class="field-row">
+                                <input type="text" name="name" placeholder="Your name" aria-label="Your name">
+                                <input type="email" name="email" placeholder="Work email" aria-label="Work email">
+                            </div>
+                            <div class="field-row">
+                                <input type="text" name="company" placeholder="Company name" aria-label="Company name">
+                                <input type="text" name="service" placeholder="Service of interest" aria-label="Service of interest">
+                            </div>
+                            <textarea name="message" placeholder="Tell us about your project or service requirement" aria-label="Project details"></textarea>
+                            <button type="button" class="button button-primary">Request Consultation</button>
+                            <p class="mini-note">Update the placeholder contact details with your real business email, number and company information before publishing.</p>
+                        </form>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section" id="locations">
+                <div class="container">
+                    <div class="section-heading reveal">
+                        <span class="section-tag">Global Presence</span>
+                        <h2>Serving businesses across multiple regions.</h2>
+                        <p>
+                            VyomAi Solutions operates across key markets to deliver AI, automation and corporate services with local expertise and global standards.
+                        </p>
+                    </div>
+
+                    <div class="locations-map-wrapper reveal">
+                        <div id="locationMap" class="world-map"></div>
+                        
+                        <!-- Location details sidebar -->
+                        <div class="location-details-container">
+                            <div class="location-detail-item active" data-location="India" data-lat="28.5921" data-lng="77.3971">
+                                <div class="detail-marker">IN</div>
+                                <h3>India</h3>
+                                <p>Primary operations hub for AI development and automation delivery</p>
+                                <p class="detail-cities">Noida, Electronic City, Gautam Buddha Nagar (NCR)</p>
+                            </div>
+                            <div class="location-detail-item" data-location="USA" data-lat="40.7128" data-lng="-74.0060">
+                                <div class="detail-marker">US</div>
+                                <h3>United States</h3>
+                                <p>Strategic partnerships and enterprise client support</p>
+                                <p class="detail-cities">New York, San Francisco, Texas</p>
+                            </div>
+                            <div class="location-detail-item" data-location="UAE" data-lat="25.2048" data-lng="55.2708">
+                                <div class="detail-marker">AE</div>
+                                <h3>United Arab Emirates</h3>
+                                <p>Regional hub for Middle East and Asia-Pacific markets</p>
+                                <p class="detail-cities">Dubai, Abu Dhabi</p>
+                            </div>
+                            <div class="location-detail-item" data-location="Singapore" data-lat="1.3521" data-lng="103.8198">
+                                <div class="detail-marker">SG</div>
+                                <h3>Singapore</h3>
+                                <p>Asia-Pacific excellence center for tech and innovation</p>
+                                <p class="detail-cities">Singapore</p>
+                            </div>
+                            <div class="location-detail-item" data-location="UK" data-lat="51.5074" data-lng="-0.1278">
+                                <div class="detail-marker">UK</div>
+                                <h3>United Kingdom</h3>
+                                <p>European market development and compliance support</p>
+                                <p class="detail-cities">London, Manchester</p>
+                            </div>
+                            <div class="location-detail-item" data-location="Australia" data-lat="-33.8688" data-lng="151.2093">
+                                <div class="detail-marker">AU</div>
+                                <h3>Australia</h3>
+                                <p>Oceania market expansion and local service delivery</p>
+                                <p class="detail-cities">Sydney, Melbourne</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container footer-grid glass-card">
+                <div>
+                    <div class="brand">
+                        <img src="/logo vyom.jpeg" alt="VyomAi Solutions Logo" class="brand-logo">
+                        <span>
+                            VyomAi Solutions Pvt Ltd
+                            <small>Smart systems for modern business</small>
+                        </span>
+                    </div>
+                    <p style="margin-top: 1rem;">
+                        Professional, responsive and tech-forward digital presence for a company delivering AI, automation, marketing and corporate services.
+                    </p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Core Services</h3>
+                    <div class="footer-links">
+                        <a href="#services">AI Chatbots</a>
+                        <a href="#services">AI Agents</a>
+                        <a href="#services">Automation</a>
+                        <a href="#services">Marketing Services</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">Company</h3>
+                    <div class="footer-links">
+                        <a href="#about">About Us</a>
+                        <a href="#process">Our Process</a>
+                        <a href="#contact">Contact</a>
+                        <a href="#services">Legal & Corporate Services</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ========================================
+        // PROFESSIONAL NAVIGATION ENHANCEMENTS
+        // ========================================
+        
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mainNav = document.getElementById('mainNav');
+        
+        if (mobileMenuToggle && mainNav) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenuToggle.classList.toggle('active');
+                mainNav.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking a link
+            const navLinks = mainNav.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuToggle.classList.remove('active');
+                    mainNav.classList.remove('active');
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mainNav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    mobileMenuToggle.classList.remove('active');
+                    mainNav.classList.remove('active');
+                }
+            });
+        }
+
+        // Add scroll effect to header
+        const mainHeader = document.getElementById('mainHeader');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 50) {
+                mainHeader.classList.add('scrolled');
+            } else {
+                mainHeader.classList.remove('scrolled');
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, { passive: true });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerOffset = 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // ========================================
+        // REVEAL ANIMATIONS
+        // ========================================
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.18 });
+
+        revealElements.forEach((element) => revealObserver.observe(element));
+
+        // ========================================
+        // LOCATION MAP INITIALIZATION
+        // ========================================
+        let map = null;
+        let markers = {};
+        let currentLocation = 'India';
+
+        function initMap() {
+            // Create map centered on the world
+            map = L.map('locationMap').setView([20, 20], 3);
+
+            // Add tile layer from OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18,
+                tileSize: 512,
+                zoomOffset: -1,
+                className: 'map-tiles'
+            }).addTo(map);
+
+            // Custom marker HTML
+            const createCustomMarker = (location) => {
+                const el = document.createElement('div');
+                el.className = 'custom-marker';
+                el.innerHTML = location.code;
+                el.onclick = () => activateLocation(location.name);
+                return el;
+            };
+
+            // Define locations with details
+            const locations = [
+                { name: 'India', code: 'IN', lat: 12.9716, lng: 77.5946 },
+                { name: 'USA', code: 'US', lat: 40.7128, lng: -74.0060 },
+                { name: 'UAE', code: 'AE', lat: 25.2048, lng: 55.2708 },
+                { name: 'Singapore', code: 'SG', lat: 1.3521, lng: 103.8198 },
+                { name: 'UK', code: 'UK', lat: 51.5074, lng: -0.1278 },
+                { name: 'Australia', code: 'AU', lat: -33.8688, lng: 151.2093 }
+            ];
+
+            // Add markers to map
+            locations.forEach((location) => {
+                const markerElement = createCustomMarker(location);
+                const marker = L.marker([location.lat, location.lng], {
+                    icon: L.divIcon({
+                        html: markerElement,
+                        className: '',
+                        iconSize: [48, 48],
+                        iconAnchor: [24, 24],
+                        popupAnchor: [0, -24]
+                    })
+                }).addTo(map);
+
+                marker.bindPopup(`<div style="text-align: center; font-weight: 700;">${location.name}</div>`, {
+                    className: 'location-popup',
+                    closeButton: false
+                });
+
+                markers[location.name] = { marker, element: markerElement };
+
+                marker.on('click', () => activateLocation(location.name));
+            });
+
+            // Set initial location
+            activateLocation('India');
+        }
+
+        function activateLocation(locationName) {
+            currentLocation = locationName;
+
+            // Update map markers
+            Object.keys(markers).forEach((name) => {
+                markers[name].element.classList.remove('active');
+            });
+            if (markers[locationName]) {
+                markers[locationName].element.classList.add('active');
+            }
+
+            // Zoom to selected location
+            const locationDetail = document.querySelector(`[data-location="${locationName}"]`);
+            if (locationDetail && map) {
+                const lat = parseFloat(locationDetail.getAttribute('data-lat'));
+                const lng = parseFloat(locationDetail.getAttribute('data-lng'));
+                map.setView([lat, lng], 5, { animate: true, duration: 0.5 });
+            }
+
+            // Update detail panel
+            document.querySelectorAll('.location-detail-item').forEach((detail) => {
+                detail.classList.remove('active');
+            });
+            const activeDetail = document.querySelector(`[data-location="${locationName}"]`);
+            if (activeDetail && activeDetail.classList.contains('location-detail-item')) {
+                activeDetail.classList.add('active');
+                activeDetail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Initialize map when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.getElementById('locationMap')) {
+                setTimeout(initMap, 100);
+            }
+        });
+
+        // Fallback initialization
+        window.addEventListener('load', () => {
+            if (!map && document.getElementById('locationMap')) {
+                initMap();
+            }
+        });
+    </script>
+</body>
+</html>
