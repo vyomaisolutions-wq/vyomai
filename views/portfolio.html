@@ -47,6 +47,10 @@
             overflow-x: hidden;
         }
 
+        body.menu-open {
+            overflow: hidden;
+        }
+
         body::before {
             content: "";
             position: fixed;
@@ -1087,12 +1091,25 @@
         }
 
         @media (max-width: 1080px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero-panel {
+                min-height: auto;
+            }
+
             .projects-grid {
                 grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             }
         }
 
         @media (max-width: 780px) {
+            .hero {
+                padding: 2.5rem 0 1.5rem;
+            }
+
             .projects-grid {
                 grid-template-columns: 1fr;
             }
@@ -1103,6 +1120,31 @@
 
             .project-card h3 {
                 font-size: 1.4rem;
+            }
+
+            .button {
+                width: 100%;
+                padding: 0.9rem 1.2rem;
+            }
+
+            .hero-actions .button {
+                width: 100%;
+            }
+
+            .hero-stat {
+                min-width: 0;
+            }
+
+            .project-links {
+                flex-direction: column;
+            }
+
+            .project-link {
+                justify-content: center;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1259,7 +1301,8 @@
 
         @media (max-width: 780px) {
             .site-header {
-                position: static;
+                position: sticky;
+                top: 0;
             }
 
             .hero-actions,
@@ -3708,6 +3751,9 @@
             });
             trigger.addEventListener('click', (e) => {
                 if (window.innerWidth <= 1000) {
+                    if (item.classList.contains('open')) {
+                        return;
+                    }
                     e.preventDefault();
                     const wasOpen = item.classList.contains('open');
                     closeAll();
@@ -3740,13 +3786,16 @@
             mobileMenuToggle.addEventListener('click', () => {
                 mobileMenuToggle.classList.toggle('active');
                 mainNav.classList.toggle('active');
+                document.body.classList.toggle('menu-open', mainNav.classList.contains('active'));
                 if (!mainNav.classList.contains('active')) closeAll();
             });
 
-            mainNav.querySelectorAll('.nav-cta').forEach(link => {
+            mainNav.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
+                    if (window.innerWidth > 1000) return;
                     mobileMenuToggle.classList.remove('active');
                     mainNav.classList.remove('active');
+                    document.body.classList.remove('menu-open');
                     closeAll();
                 });
             });
@@ -3855,3 +3904,4 @@
     </script>
 </body>
 </html>
+
