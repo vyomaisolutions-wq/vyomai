@@ -40,7 +40,7 @@ shukla/
 ├── views/
 │   └── index.html        # Main website with enhanced navbar
 ├── public/               # Static assets (future CSS/JS/images)
-├── logo vyom.jpeg        # Company logo
+├── public/images/logo-vyom.jpeg  # Company logo
 └── README.md             # This file
 ```
 
@@ -57,7 +57,7 @@ The professional navbar includes:
 ## 🎨 Customization
 
 - Update contact details in `views/index.html` (email, phone)
-- Replace logo at root: `logo vyom.jpeg`
+- Replace logo at: `public/images/logo-vyom.jpeg`
 - Modify colors in CSS `:root` variables for brand consistency
 
 ## 🌐 Deployment
