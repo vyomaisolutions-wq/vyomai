@@ -19,6 +19,30 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'about.html'));
+});
+
+app.get('/services', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'services.html'));
+});
+
+app.get('/technologies', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'technologies.html'));
+});
+
+app.get('/industries', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'industries.html'));
+});
+
+app.get('/portfolio', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'portfolio.html'));
+});
+
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
@@ -36,14 +60,27 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, HOST, () => {
-  console.log('═══════════════════════════════════════════════════════');
-  console.log('  VyomAi Solutions - Website Server');
-  console.log('═══════════════════════════════════════════════════════');
-  console.log(`  🚀 Server running at: http://${HOST}:${PORT}`);
-  console.log(`  📅 Started: ${new Date().toLocaleString()}`);
-  console.log('═══════════════════════════════════════════════════════');
-});
+function startServer(port) {
+  const server = app.listen(port, HOST, () => {
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('  VyomAi Solutions - Website Server');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log(`  🚀 Server running at: http://${HOST}:${port}`);
+    console.log(`  📅 Started: ${new Date().toLocaleString()}`);
+    console.log('═══════════════════════════════════════════════════════');
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log(`Port ${port} is in use, trying port ${port + 1}...`);
+      startServer(port + 1);
+    } else {
+      console.error('Server error:', err);
+    }
+  });
+}
+
+startServer(PORT);
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
